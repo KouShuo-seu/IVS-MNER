@@ -1,0 +1,15 @@
+.idea/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.env.*
+logs/
+model.pt
+*.pt
+*.pth
+*.ckpt
+pretrained_models/
+dataset/images/
+dataset/twitter2017_images/
+*.zip
