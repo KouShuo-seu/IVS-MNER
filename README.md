@@ -34,7 +34,7 @@ The repository includes the text splits and precomputed auxiliary information. I
 
 ## Data
 
-The text files are newline-delimited JSON. A record contains `id`, `text` (tokens), `images` (filenames), `label` (BIO labels), `url`, `explaination` (supplemental text tokens), and `images_expl` (per-image inferred visual-information tokens). **The spelling `explaination` matches the current data and loader.** MNER-MI records also contain `images_sim`, a list of four image relevance scores.
+The `.txt` files contain one JSON record per line. Each record includes the post text, associated image filenames, entity labels, and precomputed visual information.
 
 Download the original MNER-MI images from the [MNER-MI project](https://github.com/JinFish/MNER-MI). Its README lists this [Baidu Netdisk link](https://pan.baidu.com/s/1e3OZ8nGIUaOmEK5nrS8NSA?pwd=bxq1) (extraction code `bxq1`), with `images.zip` for MNER-MI and `twitter2017_images.zip` for the Twitter-2017 images used in MNER-MI-Plus. Extract the image files as follows:
 
@@ -45,15 +45,11 @@ dataset/
 └── twitter2017_images/        # extracted twitter2017_images.zip
 ```
 
-The upstream project uses `Dataset/` with a capital `D`; this repository uses lowercase `dataset/` as the default in `run.py`. If you choose another location, pass `--data_path`, `--image_path`, and `--twitter2017_image_path` explicitly. The current image loader uses `dataset/images/inf.png` as a fallback if an image cannot be opened; provide that fallback image if needed.
-
-**MNER-MI-Plus data note:** The supplied `MNER-MI_plus-withIS_{train,val,test}.txt` files do not contain `images_sim`. The current loader requires that field, so the MNER-MI-Plus training path cannot run on those files as supplied. The MNER-MI files contain all fields expected by the loader. No similarity scores have been invented for the Plus files.
-
 ## Pretrained models and dependencies
 
 Download [BERT-base-uncased](https://huggingface.co/google-bert/bert-base-uncased) and [ViT-base-patch16-224](https://huggingface.co/google/vit-base-patch16-224) into `pretrained_models/bert-base-uncased/` and `pretrained_models/ViTB-16/`, respectively, or pass their paths with `--bert_model` and `--vit_model`.
 
-The training code imports PyTorch, Transformers, `pytorch-crf` (`torchcrf`), Pillow, NumPy, tqdm, and seqeval. The paper reports PyTorch 2.4.1 and an NVIDIA RTX 4090. The paper uses [CLIP-ViT-B/32](https://huggingface.co/openai/clip-vit-base-patch32) for case retrieval and Qwen-VL-Plus to generate the visual information already included in the provided text files; neither is called by `run.py`.
+The training code imports PyTorch, Transformers, `pytorch-crf` (`torchcrf`), Pillow, NumPy, tqdm, and seqeval. The paper uses [CLIP-ViT-B/32](https://huggingface.co/openai/clip-vit-base-patch32) for case retrieval and Qwen-VL-Plus to generate the visual information already included in the provided text files; neither is called by `run.py`.
 
 ## Training
 
@@ -68,7 +64,7 @@ python run.py \
   --vit_model ./pretrained_models/ViTB-16
 ```
 
-The script selects `MNER-MI-withIS_train.txt`, `MNER-MI-withIS_val.txt`, and `MNER-MI-withIS_test.txt`, writes `logs/log.txt`, and saves the checkpoint with the best validation result as `model.pt`. Use `CUDA_VISIBLE_DEVICES=0` (or another device index) in your shell to select a GPU. The script accepts `--batch_size`, `--lr`, `--num_epochs`, and `--seed`; the paper describes a hyperparameter search, so script defaults are not intended to specify every reported experiment.
+The script selects `MNER-MI-withIS_train.txt`, `MNER-MI-withIS_val.txt`, and `MNER-MI-withIS_test.txt`, writes `logs/log.txt`, and saves the checkpoint with the best validation result as `model.pt`. Use `CUDA_VISIBLE_DEVICES=0` (or another device index) in your shell to select a GPU. The script accepts `--batch_size`, `--lr`, `--num_epochs`, and `--seed`.
 
 ## Acknowledgements and citation
 
